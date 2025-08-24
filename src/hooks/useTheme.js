@@ -1,10 +1,18 @@
-import { useColorScheme } from "react-native";
+import { useEffect, useState } from "react";
+import { Appearance, useColorScheme } from "react-native";
 import { theme } from "../common/theme";
 
 export const useTheme = () => {
-  const colorScheme = useColorScheme();
   const { colors } = theme;
   const { lightTheme, darkTheme } = colors;
+  const [scheme, setScheme] = useState(Appearance.getColorScheme());
 
-  return colorScheme === "dark" ? darkTheme : lightTheme;
+  useEffect(() => {
+    const subscription = Appearance.addChangeListener(({ colorScheme }) => {
+      setScheme(colorScheme);
+    });
+    return () => subscription.remove();
+  }, []);
+
+  return scheme === "dark" ? darkTheme : lightTheme;
 };

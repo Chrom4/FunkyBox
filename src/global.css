@@ -1,0 +1,21 @@
+:root {
+  /* Cores para o tema claro */
+  --background-primary: #ffffffff;
+  --background-secondary: #f0f0f0ff;
+  --text-primary: #111112ff;
+  --text-secondary: #333333ff;
+  --primary-color: #3d76bdff;
+  --accent-color: #000000ff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Cores para o tema escuro */
+    --background-primary: #060606ff;
+    --background-secondary: #171f33ff;
+    --text-primary: #ffffffff;
+    --text-secondary: #ccccccff;
+    --primary-color: #3d76bdff;
+    --accent-color: #ccccccff;
+  }
+}

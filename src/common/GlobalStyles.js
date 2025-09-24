@@ -1,4 +1,4 @@
-import { Platform, Text } from "react-native";
+import { Platform, StatusBar, Text, View } from "react-native";
 
 const defaultFont = Platform.OS === "ios" ? "Helvetica" : "monospace";
 
@@ -7,7 +7,11 @@ const GlobalStyles = (props) => {
     ...(Text.defaultProps || {}),
     style: { fontFamily: defaultFont },
   };
-  return props.children;
+  return (
+    <View style={{ flex: 1, paddingTop: StatusBar.currentHeight }}>
+      {props.children}
+    </View>
+  );
 };
 
 export default GlobalStyles;

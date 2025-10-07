@@ -1,14 +1,19 @@
+import { useEffect, useRef, useState } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { formatTime } from "../../src/helpers/dataFormat";
-import Icon from "../../src/components/Icon";
 import Logo from "../../assets/icon.png";
-import Char1 from "../../assets/images/char1.jpeg";
-import { useEffect, useState, useRef } from "react";
+import Icon from "../../src/components/Icon";
+import { formatTime } from "../../src/helpers/dataFormat";
+
+import audio1 from "../../assets/sounds/[Ponto] Bass Mechanic 2.mp3";
+import { Audio } from "expo-av";
 
 const Home = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [count, setCount] = useState(0);
   const [soundTrack, setSoundTrack] = useState([]);
+  const [firstPlay, setFirstPlay] = useState(true);
+  const [sounds, setSounds] = useState([]);
+
   const intervalRef = useRef(null);
 
   const styles = StyleSheet.create({
@@ -82,12 +87,81 @@ const Home = () => {
     },
   });
 
+  const playSounds = async () => {
+    try {
+      await Promise.all(sounds.map((s) => s.unloadAsync()));
+
+      const loadedSounds = await Promise.all(
+        soundTrack.map(async (item) => {
+          const source = instruments[item.instrument]?.file;
+          if (!source) return null;
+
+          const { sound } = await Audio.Sound.createAsync(source);
+          await sound.playAsync();
+          return sound;
+        })
+      );
+
+      setSounds(loadedSounds.filter(Boolean));
+      console.log("🎧 Trilha tocando...");
+    } catch (error) {
+      console.error("Erro ao tocar sons:", error);
+    }
+  };
+
+  const pauseSounds = async () => {
+    try {
+      await Promise.all(
+        sounds.map(async (s) => {
+          const status = await s.getStatusAsync();
+          if (status.isLoaded && status.isPlaying) {
+            await s.pauseAsync();
+          }
+        })
+      );
+      console.log("🔇 Sons pausados");
+    } catch (error) {
+      console.error("Erro ao pausar sons:", error);
+    }
+  };
+
+  const resumeSounds = async () => {
+    try {
+      await Promise.all(
+        sounds.map(async (s) => {
+          const status = await s.getStatusAsync();
+          if (status.isLoaded && !status.isPlaying) {
+            await s.playAsync();
+          }
+        })
+      );
+      console.log("▶️ Sons retomados");
+    } catch (error) {
+      console.error("Erro ao retomar sons:", error);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      // clearInterval(intervalRef.current);
+      sounds.forEach((s) => s.unloadAsync());
+    };
+  }, [sounds]);
+
   useEffect(() => {
     if (isPlaying) {
       intervalRef.current = setInterval(() => {
-        setCount((prevCount) => prevCount + 1);
-      }, 1000);
+        setCount((prev) => prev + 1);
+      }, 1);
+
+      if (firstPlay && soundTrack.length > 0) {
+        playSounds();
+        setFirstPlay(false);
+      } else {
+        resumeSounds();
+      }
     } else {
+      pauseSounds();
       clearInterval(intervalRef.current);
     }
 
@@ -97,6 +171,7 @@ const Home = () => {
   const handleReset = () => {
     setCount(0);
     setIsPlaying(false);
+    setFirstPlay(true);
     clearInterval(intervalRef.current);
   };
 
@@ -105,22 +180,13 @@ const Home = () => {
   };
 
   const handleSoundAdd = (index) => {
-    setSoundTrack((prevValue) => {
-      let clone = [...prevValue];
-
+    setSoundTrack((prev) => {
+      const clone = [...prev];
       if (clone.find(({ instrument }) => instrument === index)) return clone;
-
-      const newIndex = chars.findIndex((user, idx) =>
-        !clone.some(item => item.char === idx)
-      );
-
-      if (newIndex === -1) return clone;
-
-      clone.push({ char: newIndex, instrument: index });
-
+      clone.push({ char: clone.length, instrument: index });
       return clone;
-  });
-};
+    });
+  };
 
   const handleSoundRemove = (charIndex) => {
     setSoundTrack((prevValue) =>
@@ -130,6 +196,7 @@ const Home = () => {
 
   const instruments = [
     {
+      file: audio1,
       backgroundColor: "#f364bb",
       icon: {
         type: "MaterialCommunityIcons",
@@ -138,6 +205,7 @@ const Home = () => {
       },
     },
     {
+      file: audio1,
       backgroundColor: "#f364bb",
       icon: {
         type: "MaterialCommunityIcons",
@@ -146,6 +214,7 @@ const Home = () => {
       },
     },
     {
+      file: audio1,
       backgroundColor: "#ffc626",
       icon: {
         type: "FontAwesome6",
@@ -154,6 +223,7 @@ const Home = () => {
       },
     },
     {
+      file: audio1,
       backgroundColor: "#ffc626",
       icon: {
         type: "FontAwesome6",
@@ -187,7 +257,6 @@ const Home = () => {
     },
   ];
 
-  console.log(soundTrack);
   return (
     <View style={styles.Container}>
       <View style={styles.LogoContainer}>

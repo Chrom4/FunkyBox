@@ -110,19 +110,17 @@ const Home = () => {
 
       if (clone.find(({ instrument }) => instrument === index)) return clone;
 
-      const maxIndex =
-        clone.length > 0 ? Math.max(...clone.map((item) => item.char)) : -1;
-      const newIndex = maxIndex + 1;
+      const newIndex = chars.findIndex((user, idx) =>
+        !clone.some(item => item.char === idx)
+      );
 
-      console.log(newIndex);
-
-      if (newIndex > chars.length - 1) return clone;
+      if (newIndex === -1) return clone;
 
       clone.push({ char: newIndex, instrument: index });
 
       return clone;
-    });
-  };
+  });
+};
 
   const handleSoundRemove = (charIndex) => {
     setSoundTrack((prevValue) =>

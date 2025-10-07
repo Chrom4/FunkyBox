@@ -9,7 +9,6 @@ const RootLayout = () => {
       <Stack>
         <Stack.Protected guard={isLoggedIn}>
           <Stack.Screen options={{ headerShown: false }} name="(tabs)" />
-          <Stack.Screen options={{ headerShown: false }} name="modal" />
         </Stack.Protected>
         <Stack.Protected guard={!isLoggedIn}>
           <Stack.Screen options={{ headerShown: false }} name="login" />

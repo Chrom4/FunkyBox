@@ -57,7 +57,7 @@ const Home = () => {
     CharIcon: {
       width: 70,
       height: 70,
-      backgroundColor: "#667ca5",
+      // backgroundColor: "#667ca5",
       borderRadius: 100,
       justifyContent: "center",
       alignItems: "center",

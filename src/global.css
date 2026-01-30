@@ -6,6 +6,7 @@
   --text-secondary: #333333ff;
   --primary-color: #3d76bdff;
   --accent-color: #000000ff;
+  --cor-personagem1: #00000000;
 }
 
 @media (prefers-color-scheme: dark) {

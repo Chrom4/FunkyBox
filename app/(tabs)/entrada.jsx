@@ -1,5 +1,6 @@
-import { StyleSheet, Text, View, StatusBar, Pressable } from "react-native";
+import { StyleSheet, Text, View, StatusBar, Pressable, Image} from "react-native";
 import { useTheme } from "../../src/hooks/useTheme";
+import Logo from "../../assets/Group1.svg";
 /*
 import ValueFormatter from "../../src/components/ValueFormatter";
 import Input from "../src/components/Input";
@@ -9,7 +10,7 @@ import Button from "../src/components/Button";
 const Entrada = ()=> {
     const theme = useTheme();
     const styles = StyleSheet.create({
-        container: {
+    container: {
         flex: 1,
         alignItems: "center",
         marginTop: StatusBar.currentHeight,
@@ -29,6 +30,17 @@ const Entrada = ()=> {
         alignItems: "space-between",
         flexDirection: "row",
     },
+    LogoContainer: {
+        width: "100%",
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "black",
+    },
+    Logo: {
+        width: 300,
+        height: 120,
+        resizeMode: "contain",
+    },
 
     // Text styles
     title: {
@@ -46,6 +58,9 @@ const Entrada = ()=> {
         fontSize: 15,
         fontFamily: 'open-sans',
         fontWeight: "300",
+        maxWidth:230,
+        alignSelf:'center',
+        textAlign:'justify',
     },
     forgotPassword: {
         color: theme.primary_color,
@@ -57,8 +72,9 @@ const Entrada = ()=> {
     return (
     <View style={styles.container}>
       <Text style={styles.title}>Esta é Tela!</Text>
-      <Text style={styles.text}>blablablablablablablablablablablablablabla</Text>
-      <Text style={styles.text}>blablablablablablablablablablablablablabla</Text>
+      <Text style={styles.text}>Já pensou em um app que reúne 
+        diversão, música e cultura? Aqui você 
+        encontra isso e muito mais!</Text>
     </View>
   );
 }

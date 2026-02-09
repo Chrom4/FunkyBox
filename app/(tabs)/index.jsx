@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import Logo from "../../assets/icon.png";
+import Logo from "../../assets/Group1.svg";
 import Icon from "../../src/components/Icon";
 import { formatTime } from "../../src/helpers/dataFormat";
 
@@ -28,7 +28,6 @@ const Home = () => {
       width: "100%",
       justifyContent: "center",
       alignItems: "center",
-      backgroundColor: "white",
     },
     Logo: {
       width: 300,
@@ -260,7 +259,7 @@ const Home = () => {
   return (
     <View style={styles.Container}>
       <View style={styles.LogoContainer}>
-        <Image source={Logo} style={styles.Logo} />
+        <Logo width={300} height={120}/>
       </View>
       <View style={styles.PlayBar}>
         <TouchableOpacity onPress={handleReset} style={styles.Icon}>

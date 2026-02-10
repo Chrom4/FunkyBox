@@ -1,14 +1,9 @@
 import { StyleSheet, Text, View, StatusBar, Pressable, Image} from "react-native";
-import { useTheme } from "../../src/hooks/useTheme";
-import Logo from "../../assets/Group1.svg";
-import { Figura } from "../../assets/fotu_introtucao.png";
-/*
-import ValueFormatter from "../../src/components/ValueFormatter";
-import Input from "../src/components/Input";
-import Button from "../src/components/Button";
-*/
+import { useTheme } from "../src/hooks/useTheme";
+import Logo from "../assets/Group1.svg";
+import Figura from "../assets/fotu_introtucao.png";
 
-const Entrada = ()=> {
+const Introducao1 = ()=> {
     const theme = useTheme();
     const styles = StyleSheet.create({
     container: {
@@ -36,9 +31,10 @@ const Entrada = ()=> {
         justifyContent: "center",
         alignItems: "center",
     },
-    Logo: {
-        width: 300,
-        height: 120,
+    Imagens: {
+        marginBlockEnd: 75,
+        width: 350,
+        height: 170,
         resizeMode: "contain",
     },
 
@@ -75,7 +71,7 @@ const Entrada = ()=> {
             <Logo width={300} height={120}/>
         </View>
         <View style={styles.LogoContainer}>
-            <Image source={Figura} />
+            <Image source={Figura} style={styles.Imagens} />
         </View> 
       <Text style={styles.text}>Já pensou em um app que reúne 
         diversão, música e cultura? Aqui você 
@@ -84,4 +80,4 @@ const Entrada = ()=> {
   );
 }
 
-export default Entrada;
+export default Introducao1;

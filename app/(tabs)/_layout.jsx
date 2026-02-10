@@ -15,7 +15,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        nome="entrada"
+        nome="introducao"
         options={{
           title: "tutorial",
           headerShown: false,

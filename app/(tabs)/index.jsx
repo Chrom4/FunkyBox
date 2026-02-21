@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Logo from "../../assets/Group1.svg";
 import Icon from "../../src/components/Icon";
 import { formatTime } from "../../src/helpers/dataFormat";

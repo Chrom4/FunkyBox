@@ -13,7 +13,7 @@ export const theme = {
     },
     darkTheme: {
       /* Cores para o tema escuro */
-      background_primary: "#060606ff",
+      background_primary: "#ffffffff",
       background_secondary: "#171f33ff",
       text_primary: "#ffffffff",
       text_secondary: "#ccccccff",

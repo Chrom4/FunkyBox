@@ -1,8 +1,12 @@
-export const formatTime = (miliseconds) => {
-  const seconds = Math.floor(miliseconds / 60);
-  const minutes = Math.floor(seconds / 60);
-  const milisecs = miliseconds % 60;
-  const secs = seconds % 60;
+export const formatTime = (totalSeconds) => {
+  const minutes = Math.floor(totalSeconds / 60);
+  const secs = totalSeconds % 60;
+  const rest_secs = totalSeconds % 15
 
-  return `${String(minutes).padStart(2, "0")}:${String(secs).padStart(2, "0")}:${String(milisecs).padStart(2, "0")}`;
+  const timeString = `${String(rest_secs).padStart(2, "0")}`;
+
+  return {
+    timeStr: timeString,  // A string bonita "01:30"
+    seconds: rest_secs // O número puro (ex: 90)
+  };
 };

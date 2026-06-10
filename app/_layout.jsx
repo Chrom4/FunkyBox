@@ -8,7 +8,7 @@ const RootLayout = () => {
     <GlobalStyles>
       <Stack>
         <Stack.Protected guard={isLoggedIn}>
-          <Stack.Screen options={{ headerShown: false }} name="introducao" />
+          <Stack.Screen options={{ headerShown: true }} name="introducao" />
         </Stack.Protected>
         <Stack.Protected guard={!isLoggedIn}>
           <Stack.Screen options={{ headerShown: false }} name="login" />

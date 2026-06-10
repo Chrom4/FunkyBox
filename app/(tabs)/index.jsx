@@ -179,6 +179,8 @@ const Home = () => {
     { icon: { type: "FontAwesome", name: "user", size: 50 } },
   ];
 
+    const {timeStr, seconds}= formatTime(count)
+
   return (
     <View style={styles.Container}>
       <View style={styles.LogoContainer}>
@@ -191,7 +193,7 @@ const Home = () => {
         </TouchableOpacity>
 
         <View>
-          <Text style={styles.Title}>{formatTime(count)}</Text>
+          <Text style={styles.Title}>{timeStr}</Text>
         </View>
 
         <TouchableOpacity onPress={handlePlayPause} style={styles.Icon}>

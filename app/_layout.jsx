@@ -6,9 +6,9 @@ const RootLayout = () => {
 
   return (
     <GlobalStyles>
-      <Stack>
+      <Stack screenOptions={{ headerShown: false }}>
         <Stack.Protected guard={isLoggedIn}>
-          <Stack.Screen options={{ headerShown: true }} name="introducao" />
+          <Stack.Screen options={{ title:"introdução", headerShown: false }} name="index" />
         </Stack.Protected>
         <Stack.Protected guard={!isLoggedIn}>
           <Stack.Screen options={{ headerShown: false }} name="login" />

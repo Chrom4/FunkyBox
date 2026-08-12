@@ -3,7 +3,7 @@ import Icon from "../../src/components/Icon";
 
 export default function TabLayout() {
   return (
-    <Tabs r>
+    <Tabs>
       <Tabs.Screen
         name="index"
         options={{
@@ -15,9 +15,10 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        nome="introducao"
+        name="introducao"
         options={{
           title: "tutorial",
+          tabBarStyle: {display:"name"},
           headerShown: false,
           tabBarIcon: ({color}) => (
             <Icon type="FontAwesome6" size={23} name="house" color={color} />

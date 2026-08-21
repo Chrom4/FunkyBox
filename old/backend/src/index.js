@@ -4,22 +4,23 @@ const bcrypt = require('bcryptjs');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const app = express();
+require('dotenv').config();
 //const jwt = require('jsonwebtoken');
 
 app.use(bodyParser.json());
 
 // Configuração do MySQL
 const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '52r7v41l*',
-  database: 'funkybox_db'
+  host: process.env.DB_HOST ?? 'localhost',
+  user: process.env.DB_USER ?? 'root',
+  password: process.env.DB_PASSWORD ?? '52r7v41l*',
+  database: process.env.DB_NAME ?? 'funkybox_db'
 });
 
 connection.connect();
 
 app.use(cors({
-  origin: ['exp://192.168.1.3:8081', 'http://localhost:19006'],
+  origin: [process.env.CORS_ORIGIN_EXP ?? 'exp://192.168.1.3:8081', 'http://localhost:19006'],
   methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
   credentials: true,
   optionsSuccessStatus: 204

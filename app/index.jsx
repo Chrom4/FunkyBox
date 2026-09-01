@@ -1,167 +1,107 @@
-import React, { useState } from 'react'; // Adicionado useState
-import { StyleSheet, Text, View, StatusBar, Image, ScrollView, Dimensions, Pressable } from "react-native";
-import { useRouter, Stack } from "expo-router";
+import React from 'react';
+import { StyleSheet, Text, ScrollView, View } from "react-native";
+import { Stack } from "expo-router";
 import { useTheme } from "../src/hooks/useTheme";
-import Logo from "../assets/Group1.svg";
-import Figura1 from "../assets/images/Webinar 1.jpg";
-import Figura2 from "../assets/images/Lesson 1.png";
-import Figura3 from "../assets/images/Mic drop 1.png";
 
-const { width } = Dimensions.get('window');
+const Informativo = () => {
+  const theme = useTheme();
 
-const Introducao = () => {
-    const theme = useTheme();
-    const router = useRouter();
-    const [activeIndex, setActiveIndex] = useState(0); // Estado para controlar as bolinhas
+  const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.background_secondary,
+    },
+    contentContainer: {
+      paddingVertical: 40,
+      paddingHorizontal: 24,
+      alignItems: "center", // Centraliza o conteúdo horizontalmente
+    },
+    title: {
+      fontSize: 30,
+      fontWeight: "300",
+      marginTop: 20,
+      marginBottom: 20,
+      color: theme.text_primary,
+      textAlign: 'center',
+    },
+    
+    text: {
+      fontSize: 16,
+      fontFamily: 'open-sans',
+      fontWeight: "300",
+      textAlign: 'center',
+      color: theme.text_secondary,
+      lineHeight: 24,
+      marginBottom: 20,
+    },
+  });
 
-    // Função para detectar a página atual no scroll
-    const handleScroll = (event) => {
-        const scrollOffset = event.nativeEvent.contentOffset.x;
-        const index = Math.round(scrollOffset / width);
-        setActiveIndex(index);
-    };
+  return (
+    <ScrollView 
+      style={styles.container} 
+      contentContainerStyle={styles.contentContainer}
+      showsVerticalScrollIndicator={true}
+      alwaysBounceVertical={true} // Força a física de scroll no iOS
+    >
+      {/* Oculta a barra de título superior */}
+      <Stack.Screen options={{ headerShown: false }} />
 
-    // Função ir proxima tela
-    const handleNext = () => {
-        router.replace("/(tabs)")
-    }
+      <Text style={styles.title}>FunkBox</Text>
 
-    const styles = StyleSheet.create({
-        container: {
-            flex: 1,
-            backgroundColor: theme.background_primary,
-        },
-        page: {
-            width: width,
-            alignItems: "center",
-            paddingTop: StatusBar.currentHeight + 20,
-            paddingHorizontal: 20,
-        },
-        logoContainer: {
-            width: "100%",
-            alignItems: "center",
-            marginBottom: 20,
-        },
-        imagemTutorial: {
-            marginBottom: 40,
-            width: width * 0.8, // 80% da tela para não encostar nas bordas
-            height: 220,
-            resizeMode: "contain",
-        },
-        text: {
-            fontSize: 16,
-            fontFamily: 'open-sans',
-            fontWeight: "300",
-            maxWidth: 280,
-            textAlign: 'center',
-            color: 'black',
-        },
-        // Estilos dos Indicadores e Botão
-        footer: {
-            position: 'absolute',
-            bottom: 50,
-            width: '100%',
-            alignItems: 'center',
-            gap: 20,
-        },
-        pagination: {
-            flexDirection: 'row',
-            gap: 8,
-        },
-        dot: {
-            height: 8,
-            borderRadius: 4,
-            backgroundColor: '#D1D1D1',
-        },
-        activeDot: {
-            width: 24,
-            backgroundColor: '#0056b3',
-        },
-        inactiveDot: {
-            width: 8,
-        },
-        button: {
-            backgroundColor: '#0056b3',
-            width: width * 0.8,
-            paddingVertical: 15,
-            borderRadius: 30,
-            alignItems: 'center',
-            position: 'absolute',
-            bottom: width * 0.2,
-            alignSelf: 'center',
-        },
-        buttonText: {
-            color: '#FFF',
-            fontWeight: 'bold',
-            fontSize: 16,
-        }
-    });
+      <Text style={styles.text}>O Electro Funk é um estilo que combina elementos de dois mundos, o Funk dos anos 1970 com o Electro.
+        Ele trouxe no campo de suas aspirações musicais uma nova premissa:as bandas não precisavam mais gastar fortunas
+        com gravações em estúdios, pois o som era feito com o auxílio de máquinas, computadores e outros aparatos eletrônicos.
+        Neste momento as bandas grandes foram desfeitas e o produtor se tornou o personagem central,
+        conhecido como “one-man show”, ou em sua tradução, banda de um homem só.
+      </Text>
 
-    return (
-        <View style={styles.container}>
-            <Stack.Screen options={{ headerShown: false }} />
-            <ScrollView
-                horizontal
-                pagingEnabled
-                showsHorizontalScrollIndicator={false}
-                onScroll={handleScroll}
-                scrollEventThrottle={16}
-            >
-                {/* PÁGINA 1 */}
-                <View style={styles.page}>
-                    <View style={styles.logoContainer}>
-                        <Logo width={200} height={80} />
-                    </View>
-                    <Image source={Figura1} style={styles.imagemTutorial} />
-                    <Text style={styles.text}>
-                        Já pensou em um app que reúne diversão, música e cultura? 
-                        Aqui você encontra isso e muito mais!
-                    </Text>
-                </View>
+      <Text style={styles.text}>
+        Ele é reconhecido por suas linhas de baixo sequenciadas, com efeitos sonoros sintetizados, que enfatizam algo 
+        mais futurístico através de texturas e timbres peculiares. Como exemplo disto, pode-se citar a influencia do uso 
+        da bateria eletrônica TR-808. Essas gravações faziam uso de baterias eletrônicas e linhas de baixo pesadas.
+      </Text>
 
-                {/* PÁGINA 2 */}
-                <View style={styles.page}>
-                    <View style={styles.logoContainer}>
-                        <Logo width={200} height={80} />
-                    </View>
-                    <Image source={Figura2} style={styles.imagemTutorial} />
-                    <Text style={styles.text}>
-                        Explore novos eventos, conecte-se com artistas e 
-                        descubra o que está acontecendo na sua cidade.
-                    </Text>
-                </View>
+      <Text style={styles.text}>
+        O funk é um estilo musical que surgiu nas favelas do Rio de Janeiro ao longo das décadas de 1970 e 1980. 
+        Combinando elementos de subgêneros norte americanos como o electro-funk, Miami Bass, electro-funk de Los Angeles. 
+        Foi originalmente criado por artistas que cresceram em favelas —comunidades estas da negligência governamental— 
+        e passavam o tempo ouvindo música americana nas rádios.
+      </Text>
 
-                {/* PÁGINA 3 */}
-                <View style={styles.page}>
-                    <View style={styles.logoContainer}>
-                        <Logo width={200} height={80} />
-                    </View>
-                    <Image source={Figura3} style={styles.imagemTutorial} />
-                    <Text style={styles.text}>
-                        Tudo pronto para começar sua jornada cultural? 
-                        Junte-se à nossa comunidade agora mesmo!
-                    </Text>
-                    {/* Botão Dinâmico */}
-                    <Pressable style={styles.button} onPress={handleNext}>
-                        <Text style={styles.buttonText}>
-                            {"Próximo"}
-                        </Text>
-                    </Pressable>
-                </View>
-            </ScrollView>
+      <Text style={styles.text}>
+        Os músicos que criaram este estilo foram influenciados por DJs e a música eletrônica; 
+        eles também adicionaram suas próprias idéias ao longo do tempo.
+      </Text>
 
-            {/* ELEMENTOS FIXOS (FORA DO SCROLLVIEW) */}
-            <View style={styles.footer}>
-                {/* Bolinhas */}
-                <View style={styles.pagination}>
-                    {[0, 1, 2].map((i) => (
-                        <View key={i} style={[styles.dot, i === activeIndex ? styles.activeDot : styles.inactiveDot]} />
-                    ))}
-                </View>
+      <Text style={styles.text}>
+        Ao mesmo tempo, DJs brasileiros tocavam música soul, shaft e funk em festas nas favelas. Nos anos 80, o DJ Marlboro trouxe para o Rio o 
+        gênero Miami Bass, que se tornando super popular. Foi aí que o funk carioca começou a parecer como o que nós conhecemos hoje. No final 
+        dos anos 80 e início dos anos 90, esses DJs misturavam rap e hip-hop com batidas repetitivas. As letras frequentemente falavam sobre a 
+        vida nas favelas, violência, brutalidade policial e direitos civis.
+      </Text>
 
-            </View>
-        </View>
-    );
-}
+      <Text style={styles.text}>
+        É imprescindível falar de Funk Carioca sem falar das danças e festas, conhecidas como Baile Funk ou Baile de Favela. É lá que as 
+        pessoas iam e vão até hoje para se divertir e dançar a noite toda. 
+      </Text>
 
-export default Introducao;
+      <Text style={styles.text}>
+        Por volta dos anos 2000, com o gênero popularizado, surgiu a Furacão 2000. As suas primeiras atividades foram a organização de bailes 
+        de funk e soul, as equipes de som eram responsáveis por montar o equipamento de som para que seja possível colocar todo mundo para dançar.
+      </Text>
+
+      <Text style={styles.text}>
+        Nas palavras do eminente e falecido MC Sapão, “o natural do Rio é o batidão”. No Rio de Janeiro, batidão e pancadão são algumas 
+        das expressões utilizadas pelos funkeiros, os apreciadores e frequentadores dos bailes funk.
+      </Text>
+
+      <Text style={styles.text}>
+        A história do funk carioca está repleta de histórias de resistência e opressão. A própria música foi moldada por esta história 
+        e pela necessidade de sobreviver em um país onde ainda é marginalizado.
+      </Text>
+      
+    </ScrollView>
+  );
+};
+
+export default Informativo;

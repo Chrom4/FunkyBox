@@ -4,151 +4,20 @@ import Icon from "../../src/components/Icon";
 import Logo from "../../assets/icon.png";
 import { useEffect, useState, useRef } from "react";
 import { Audio } from "expo-av";
+import Svg, { Circle } from "react-native-svg";
 
 const Home = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [count, setCount] = useState(0);
   const [soundTrack, setSoundTrack] = useState([]);
+  const [soundsLoaded, setSoundsLoaded] = useState(false);
+  
   const intervalRef = useRef(null);
-  const soundsRef = useRef([]); // Armazena as instâncias de áudio ativas
-
-  const styles = StyleSheet.create({
-    Container: {
-      flex: 1,
-      backgroundColor: "#a1bdec",
-    },
-    Title: {
-      fontSize: 24,
-    },
-    LogoContainer: {
-      width: "100%",
-      justifyContent: "center",
-      alignItems: "center",
-      backgroundColor: "white",
-    },
-    Logo: {
-      width: 300,
-      height: 120,
-      resizeMode: "contain",
-    },
-    PlayBar: {
-      flexDirection: "row",
-      paddingVertical: 20,
-      paddingHorizontal: 10,
-      justifyContent: "space-between",
-      alignItems: "center",
-    },
-    Icon: {
-      borderRadius: 100,
-      backgroundColor: "white",
-      justifyContent: "center",
-      alignItems: "center",
-      height: 40,
-      width: 40,
-      elevation: 10,
-    },
-    CharPanel: {
-      flex: 1,
-      flexDirection: "row",
-      flexWrap: "wrap",
-      justifyContent: "space-around",
-      padding: 20,
-      gap: 20,
-    },
-    CharIcon: {
-      width: 70,
-      height: 70,
-      borderRadius: 100,
-      justifyContent: "center",
-      alignItems: "center",
-    },
-    InstrumentsPanel: {
-      backgroundColor: "#0049ac",
-      flexDirection: "row",
-      flexWrap: "wrap",
-      justifyContent: "space-around",
-      padding: 20,
-      gap: 20,
-      flex: 1,
-      borderRadius: 8,
-    },
-    InstrumentIcon: {
-      width: 60,
-      height: 60,
-      borderRadius: 100,
-      justifyContent: "center",
-      alignItems: "center",
-      backgroundColor: "#667ca5",
-    },
-  });
-
-  // Função para gerenciar o áudio (carregar e tocar em loop)
-  const syncAudio = async () => {
-    // Para e descarrega todos os sons atuais para evitar sobreposição
-    await Promise.all(soundsRef.current.map(s => s.unloadAsync()));
-    soundsRef.current = [];
-
-    if (isPlaying) {
-      const newSounds = await Promise.all(
-        soundTrack.map(async (item) => {
-          const { sound } = await Audio.Sound.createAsync(
-            instruments[item.instrument].file,
-            { shouldPlay: true, isLooping: true }
-          );
-          return sound;
-        })
-      );
-      soundsRef.current = newSounds;
-    }
-  };
-
-  useEffect(() => {
-    // Sincroniza o áudio sempre que o estado de Play ou a trilha mudar
-    syncAudio();
-
-    if (isPlaying) {
-      intervalRef.current = setInterval(() => {
-        setCount((prevCount) => prevCount + 1);
-      }, 1000);
-    } else {
-      clearInterval(intervalRef.current);
-    }
-
-    return () => {
-      clearInterval(intervalRef.current);
-    };
-  }, [isPlaying, soundTrack]);
-
-  const handleReset = () => {
-    setCount(0);
-    setIsPlaying(false);
-    setSoundTrack([]); // Limpa os instrumentos dos personagens também
-  };
-
-  const handlePlayPause = () => {
-    setIsPlaying((prev) => !prev);
-  };
-
-  const handleSoundAdd = (index) => {
-    setSoundTrack((prevValue) => {
-      let clone = [...prevValue];
-      if (clone.find(({ instrument }) => instrument === index)) return clone;
-
-      const newIndex = chars.findIndex((user, idx) =>
-        !clone.some(item => item.char === idx)
-      );
-
-      if (newIndex === -1) return clone;
-      clone.push({ char: newIndex, instrument: index });
-      return clone;
-    });
-  };
-
-  const handleSoundRemove = (charIndex) => {
-    setSoundTrack((prevValue) =>
-      prevValue.filter(({ char }) => char !== charIndex)
-    );
-  };
+  
+  // Armazena as instâncias pré-carregadas: { sound, active, pending }
+  const soundsRef = useRef({}); 
+  const countRef = useRef(0);
+  const isPlayingRef = useRef(false);
 
   const instruments = [
     {
@@ -179,7 +48,169 @@ const Home = () => {
     { icon: { type: "FontAwesome", name: "user", size: 50 } },
   ];
 
-    const {timeStr, seconds}= formatTime(count)
+  const styles = StyleSheet.create({
+    Container: { flex: 1, backgroundColor: "#a1bdec" },
+    Title: { fontSize: 20, fontWeight: "bold", color: "#0049ac" },
+    LogoContainer: { width: "100%", justifyContent: "center", alignItems: "center", backgroundColor: "white" },
+    Logo: { width: 300, height: 120, resizeMode: "contain" },
+    PlayBar: { flexDirection: "row", paddingVertical: 20, paddingHorizontal: 10, justifyContent: "space-between", alignItems: "center" },
+    Icon: { borderRadius: 100, backgroundColor: "white", justifyContent: "center", alignItems: "center", height: 40, width: 40, elevation: 10 },
+    TimerContainer: { justifyContent: "center", alignItems: "center", position: "relative" },
+    TimerTextContainer: { position: "absolute", justifyContent: "center", alignItems: "center" },
+    CharPanel: { flex: 1, flexDirection: "row", flexWrap: "wrap", justifyContent: "space-around", padding: 20, gap: 20 },
+    CharIcon: { width: 70, height: 70, borderRadius: 100, justifyContent: "center", alignItems: "center" },
+    InstrumentsPanel: { backgroundColor: "#0049ac", flexDirection: "row", flexWrap: "wrap", justifyContent: "space-around", padding: 20, gap: 20, flex: 1, borderRadius: 8 },
+    InstrumentIcon: { width: 60, height: 60, borderRadius: 100, justifyContent: "center", alignItems: "center", backgroundColor: "#667ca5" },
+  });
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadAllSounds = async () => {
+      try {
+        const loadedSounds = {};
+        
+        await Promise.all(
+          instruments.map(async (inst, index) => {
+            const { sound } = await Audio.Sound.createAsync(
+              inst.file,
+              { isLooping: true, volume: 1 }
+            );
+            loadedSounds[index] = { sound, active: false, pending: false };
+          })
+        );
+
+        if (isMounted) {
+          soundsRef.current = loadedSounds;
+          setSoundsLoaded(true);
+        }
+      } catch (error) {
+        console.warn("Erro ao carregar sons:", error);
+      }
+    };
+
+    loadAllSounds();
+
+    return () => {
+      isMounted = false;
+      Object.values(soundsRef.current).forEach((item) => {
+        if (item.sound) item.sound.unloadAsync().catch(() => {});
+      });
+    };
+  }, []);
+
+  useEffect(() => {
+    isPlayingRef.current = isPlaying;
+
+    if (!soundsLoaded) return;
+
+    const activeItems = Object.values(soundsRef.current).filter(i => i.active);
+
+    if (isPlaying) {
+      Promise.all(activeItems.map(i => i.sound.playAsync())).catch(() => {});
+    } else {
+      Promise.all(activeItems.map(i => i.sound.pauseAsync())).catch(() => {});
+    }
+  }, [isPlaying, soundsLoaded]);
+
+  useEffect(() => {
+    if (isPlaying) {
+      intervalRef.current = setInterval(() => {
+        setCount((prevCount) => {
+          const newCount = (prevCount + 1) % 15;
+          countRef.current = newCount;
+          
+          if (newCount === 0) {
+            const itemsToPlay = Object.values(soundsRef.current).filter(
+              i => i.active || i.pending
+            );
+
+            itemsToPlay.forEach((item) => {
+              item.active = true;
+              item.pending = false;
+            });
+
+ 
+            Promise.all(
+              itemsToPlay.map(item => item.sound.playFromPositionAsync(0))
+            ).catch(() => {});
+          }
+
+          return newCount;
+        });
+      }, 1000);
+    } else {
+      clearInterval(intervalRef.current);
+    }
+
+    return () => clearInterval(intervalRef.current);
+  }, [isPlaying]);
+
+  const handleReset = () => {
+    setCount(0);
+    countRef.current = 0;
+    setIsPlaying(false);
+    setSoundTrack([]);
+    
+    Object.values(soundsRef.current).forEach((item) => {
+      item.active = false;
+      item.pending = false;
+      item.sound.stopAsync().catch(() => {});
+    });
+  };
+
+  const handlePlayPause = () => {
+    if (soundsLoaded) setIsPlaying((prev) => !prev);
+  };
+
+  const handleSoundAdd = (index) => {
+    if (!soundsLoaded) return;
+    if (soundTrack.some(({ instrument }) => instrument === index)) return;
+
+    const newIndex = chars.findIndex(
+      (user, idx) => !soundTrack.some((item) => item.char === idx),
+    );
+    if (newIndex === -1) return; 
+
+    setSoundTrack((prevValue) => [...prevValue, { char: newIndex, instrument: index }]);
+
+    const item = soundsRef.current[index];
+    if (!item) return;
+
+    if (isPlayingRef.current && countRef.current > 0) {
+      item.pending = true;
+    } else {
+      item.active = true;
+
+      if (isPlayingRef.current) {
+        item.sound.playFromPositionAsync(0).catch(() => {});
+      }
+    }
+  };
+
+  const handleSoundRemove = (charIndex) => {
+    const trackItem = soundTrack.find(({ char }) => char === charIndex);
+    if (!trackItem) return;
+
+    const instIndex = trackItem.instrument;
+
+    setSoundTrack((prevValue) => prevValue.filter(({ char }) => char !== charIndex));
+
+    const item = soundsRef.current[instIndex];
+    if (item) {
+      item.active = false;
+      item.pending = false;
+      item.sound.stopAsync().catch(() => {}); 
+    }
+  };
+
+  const { timeStr } = formatTime(count);
+  const circleSize = 80;
+  const strokeWidth = 6;
+  const radius = (circleSize - strokeWidth) / 2;
+  const circumference = radius * 2 * Math.PI;
+  const progress = (count % 15) / 15;
+  const strokeDashoffset = circumference - progress * circumference;
 
   return (
     <View style={styles.Container}>
@@ -192,16 +223,22 @@ const Home = () => {
           <Icon type="FontAwesome6" name="arrows-rotate" size={24} />
         </TouchableOpacity>
 
-        <View>
-          <Text style={styles.Title}>{timeStr}</Text>
+        <View style={styles.TimerContainer}>
+          <Svg width={circleSize} height={circleSize}>
+            <Circle stroke="#d3e0f7" fill="none" cx={circleSize / 2} cy={circleSize / 2} r={radius} strokeWidth={strokeWidth} />
+            <Circle stroke="#0049ac" fill="none" cx={circleSize / 2} cy={circleSize / 2} r={radius} strokeWidth={strokeWidth} strokeDasharray={circumference} strokeDashoffset={strokeDashoffset} strokeLinecap="round" transform={`rotate(-90 ${circleSize / 2} ${circleSize / 2})`} />
+          </Svg>
+          <View style={styles.TimerTextContainer}>
+            <Text style={styles.Title}>{timeStr}</Text>
+          </View>
         </View>
 
-        <TouchableOpacity onPress={handlePlayPause} style={styles.Icon}>
-          <Icon
-            type="FontAwesome6"
-            name={isPlaying ? "pause" : "play"}
-            size={24}
-          />
+        <TouchableOpacity 
+          onPress={handlePlayPause} 
+          style={[styles.Icon, { opacity: soundsLoaded ? 1 : 0.5 }]}
+          disabled={!soundsLoaded}
+        >
+          <Icon type="FontAwesome6" name={isPlaying ? "pause" : "play"} size={24} />
         </TouchableOpacity>
       </View>
 
@@ -211,19 +248,8 @@ const Home = () => {
           const instrumentBackgroundColor = instruments[found]?.backgroundColor;
 
           return (
-            <TouchableOpacity
-              onPress={() => handleSoundRemove(index)}
-              key={index}
-              style={[
-                styles.CharIcon,
-                { backgroundColor: instrumentBackgroundColor || "#667ca5" },
-              ]}
-            >
-              <Icon
-                type={obj.icon.type}
-                name={obj.icon.name}
-                size={obj.icon.size}
-              />
+            <TouchableOpacity onPress={() => handleSoundRemove(index)} key={index} style={[styles.CharIcon, { backgroundColor: instrumentBackgroundColor || "#667ca5" }]}>
+              <Icon type={obj.icon.type} name={obj.icon.name} size={obj.icon.size} />
             </TouchableOpacity>
           );
         })}
@@ -235,19 +261,8 @@ const Home = () => {
             const isUsed = soundTrack.some(({ instrument }) => instrument === index);
 
             return (
-              <TouchableOpacity
-                key={index}
-                onPress={() => handleSoundAdd(index)}
-                style={[
-                  styles.InstrumentIcon,
-                  !isUsed && { backgroundColor: obj.backgroundColor },
-                ]}
-              >
-                <Icon
-                  type={obj.icon.type}
-                  name={obj.icon.name}
-                  size={obj.icon.size}
-                />
+              <TouchableOpacity key={index} onPress={() => handleSoundAdd(index)} style={[styles.InstrumentIcon, !isUsed && { backgroundColor: obj.backgroundColor }]}>
+                <Icon type={obj.icon.type} name={obj.icon.name} size={obj.icon.size} />
               </TouchableOpacity>
             );
           })}

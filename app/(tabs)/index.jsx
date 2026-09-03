@@ -1,7 +1,7 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { formatTime } from "../../src/helpers/dataFormat";
 import Icon from "../../src/components/Icon";
-import Logo from "../../assets/icon.png";
+import Logo from "../../assets/Group1.svg";
 import { useEffect, useState, useRef } from "react";
 import { Audio } from "expo-av";
 import Svg, { Circle } from "react-native-svg";
@@ -51,8 +51,8 @@ const Home = () => {
   const styles = StyleSheet.create({
     Container: { flex: 1, backgroundColor: "#a1bdec" },
     Title: { fontSize: 20, fontWeight: "bold", color: "#0049ac" },
-    LogoContainer: { width: "100%", justifyContent: "center", alignItems: "center", backgroundColor: "white" },
-    Logo: { width: 300, height: 120, resizeMode: "contain" },
+    LogoContainer: { width: "100%", justifyContent: "center", alignItems: "center"},
+    logo: {alignSelf: 'center', marginVertical: 20,},
     PlayBar: { flexDirection: "row", paddingVertical: 20, paddingHorizontal: 10, justifyContent: "space-between", alignItems: "center" },
     Icon: { borderRadius: 100, backgroundColor: "white", justifyContent: "center", alignItems: "center", height: 40, width: 40, elevation: 10 },
     TimerContainer: { justifyContent: "center", alignItems: "center", position: "relative" },
@@ -214,9 +214,7 @@ const Home = () => {
 
   return (
     <View style={styles.Container}>
-      <View style={styles.LogoContainer}>
-        <Image source={Logo} style={styles.Logo} />
-      </View>
+      <Logo width={250} height={80} style={{ alignSelf: 'center', marginVertical: 20 }} />
 
       <View style={styles.PlayBar}>
         <TouchableOpacity onPress={handleReset} style={styles.Icon}>

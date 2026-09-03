@@ -55,6 +55,7 @@ const Introducao = () => {
             maxWidth: 280,
             textAlign: 'center',
             color: 'black',
+            textAlign: 'justify'
         },
         // Estilos dos Indicadores e Botão
         footer: {
@@ -142,11 +143,7 @@ const Introducao = () => {
                         Junte-se à nossa comunidade agora mesmo!
                     </Text>
                     {/* Botão Dinâmico */}
-                    <Pressable style={styles.button} onPress={handleNext}>
-                        <Text style={styles.buttonText}>
-                            {"Próximo"}
-                        </Text>
-                    </Pressable>
+                    
                 </View>
             </ScrollView>
 

@@ -1,12 +1,19 @@
-import React from 'react';
-import { StyleSheet, Text, ScrollView, View } from "react-native";
-import { Stack } from "expo-router";
+import React, { useState } from 'react'; // Adicionado useState
+import { StyleSheet, Text, View, StatusBar, Image, ScrollView, Dimensions, Pressable } from "react-native";
+import { useRouter, Stack } from "expo-router";
 import { useTheme } from "../src/hooks/useTheme";
+import Logo from "../assets/Group1.svg";
 
 const Informativo = () => {
   const theme = useTheme();
+  const router = useRouter();
+
+  const handleNext = () => {
+     router.replace("/(tabs)")
+  }
 
   const styles = StyleSheet.create({
+    
     container: {
       flex: 1,
       backgroundColor: theme.background_secondary,
@@ -14,25 +21,39 @@ const Informativo = () => {
     contentContainer: {
       paddingVertical: 40,
       paddingHorizontal: 24,
-      alignItems: "center", // Centraliza o conteúdo horizontalmente
+      alignItems: "center",
     },
-    title: {
-      fontSize: 30,
-      fontWeight: "300",
-      marginTop: 20,
-      marginBottom: 20,
+    titleText: {
+      fontSize: 26,
+      fontWeight: "bold",
       color: theme.text_primary,
+      marginVertical: 20,
       textAlign: 'center',
     },
-    
     text: {
       fontSize: 16,
       fontFamily: 'open-sans',
       fontWeight: "300",
-      textAlign: 'center',
+      textAlign: 'justify',
+      writingDirection: 'ltr', // Compatibilidade de justificação no iOS
       color: theme.text_secondary,
       lineHeight: 24,
       marginBottom: 20,
+      width: '100%',
+    },
+    button: {
+      backgroundColor: '#0056b3',
+      width: '80%', // Substituído 'width * 0.8' por porcentagem
+      paddingVertical: 15,
+      borderRadius: 30,
+      alignItems: 'center',
+      marginTop: 20,
+      marginBottom: 30, // Garante espaçamento ao rolar até o fim
+    },
+    buttonText: {
+      color: '#FFF',
+      fontWeight: 'bold',
+      fontSize: 16,
     },
   });
 
@@ -41,15 +62,17 @@ const Informativo = () => {
       style={styles.container} 
       contentContainerStyle={styles.contentContainer}
       showsVerticalScrollIndicator={true}
-      alwaysBounceVertical={true} // Força a física de scroll no iOS
+      alwaysBounceVertical={true}
     >
-      {/* Oculta a barra de título superior */}
       <Stack.Screen options={{ headerShown: false }} />
 
-      <Text style={styles.title}>FunkBox</Text>
+      <Logo width={250} height={80} />
 
-      <Text style={styles.text}>O Electro Funk é um estilo que combina elementos de dois mundos, o Funk dos anos 1970 com o Electro.
-        Ele trouxe no campo de suas aspirações musicais uma nova premissa:as bandas não precisavam mais gastar fortunas
+      <Text style={styles.titleText}>Electro-funk</Text>
+
+      <Text style={styles.text}>
+        O Electro Funk é um estilo que combina elementos de dois mundos, o Funk dos anos 1970 com o Electro.
+        Ele trouxe no campo de suas aspirações musicais uma nova premissa: as bandas não precisavam mais gastar fortunas
         com gravações em estúdios, pois o som era feito com o auxílio de máquinas, computadores e outros aparatos eletrônicos.
         Neste momento as bandas grandes foram desfeitas e o produtor se tornou o personagem central,
         conhecido como “one-man show”, ou em sua tradução, banda de um homem só.
@@ -64,7 +87,7 @@ const Informativo = () => {
       <Text style={styles.text}>
         O funk é um estilo musical que surgiu nas favelas do Rio de Janeiro ao longo das décadas de 1970 e 1980. 
         Combinando elementos de subgêneros norte americanos como o electro-funk, Miami Bass, electro-funk de Los Angeles. 
-        Foi originalmente criado por artistas que cresceram em favelas —comunidades estas da negligência governamental— 
+        Foi originalmente criado por artistas que cresceram em favelas — comunidades estas da negligência governamental — 
         e passavam o tempo ouvindo música americana nas rádios.
       </Text>
 
@@ -99,7 +122,10 @@ const Informativo = () => {
         A história do funk carioca está repleta de histórias de resistência e opressão. A própria música foi moldada por esta história 
         e pela necessidade de sobreviver em um país onde ainda é marginalizado.
       </Text>
-      
+
+      <Pressable style={styles.button} onPress={handleNext}>
+        <Text style={styles.buttonText}>Próximo</Text>
+      </Pressable>
     </ScrollView>
   );
 };

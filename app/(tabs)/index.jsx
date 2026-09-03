@@ -46,6 +46,10 @@ const Home = () => {
     { icon: { type: "FontAwesome", name: "user", size: 50 } },
     { icon: { type: "FontAwesome", name: "user", size: 50 } },
     { icon: { type: "FontAwesome", name: "user", size: 50 } },
+    { icon: { type: "FontAwesome", name: "user", size: 50 } },
+    { icon: { type: "FontAwesome", name: "user", size: 50 } },
+    { icon: { type: "FontAwesome", name: "user", size: 50 } },
+    { icon: { type: "FontAwesome", name: "user", size: 50 } },
   ];
 
   const styles = StyleSheet.create({

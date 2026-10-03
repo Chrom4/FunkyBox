@@ -6,7 +6,7 @@ export const theme = {
       background_secondary: "#A0BDEB",
       text_primary: "#111112ff",
       text_secondary: "#333333ff",
-      primary_color: "#3d76bdff",
+      primary_color: "#074cab",
       accent_color: "#000000ff",
       light_blue_1: "#B1E5F2",
       assets_color1: "#003499"
